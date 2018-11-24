@@ -1,0 +1,23 @@
+.welcome {
+    text-align: center;
+    padding: 40px 10px;
+}
+
+.welcome h1 {
+    font-size: 40px;
+}
+
+.link-input-container {
+    width: 80vw;
+    min-width: 330px;
+    max-width: 500px;
+}
+
+#link-input {
+    text-align: center;
+}
+
+#take-button {
+    margin-top:10px;
+    width: 100%
+}

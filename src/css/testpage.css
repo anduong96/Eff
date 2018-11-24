@@ -1,0 +1,57 @@
+.test-nav-buttons {
+    width: 100%;
+    text-align: center;
+}
+
+.test-nav-buttons button {
+    width: 50%
+}
+
+.side-menu {
+    height: 100vh;
+    overflow: auto;
+}
+
+.focus-layout {
+    height: 100%;
+}
+
+.focus-container {
+    padding: 10px
+}
+
+.test-question img {
+    padding: 10px 0px;
+    width: 100%;
+    max-width: 700px;
+}
+
+.test-question {
+    padding-bottom: 20px;
+}
+
+.answers-group {
+    max-width: 100%;
+}
+
+.answers-group label {
+    display: block;
+    padding: 5px 0px;
+}
+
+.answers-group label span:not(.ant-radio) {
+    max-width: 100%;
+    display: inline-block;
+    word-wrap: break-word;
+    white-space: normal;
+}
+
+#focus-header {
+    padding-bottom: 5px;
+    border-bottom: 1px solid #ccc;
+}
+
+.timer-container {
+    height: 100%;
+    float: right;
+}

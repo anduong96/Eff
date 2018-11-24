@@ -1,0 +1,18 @@
+#app-main, .ant-layout.full  {
+    min-width: 100vw !important;
+    min-height: 100vh !important;
+}
+
+.ant-layout div,
+.ant-layout {
+    background-color: white;
+}
+
+.dead-center {
+    margin-top: 15vh;
+    display: grid;
+}
+
+.dead-center * {
+    margin: auto;
+}
