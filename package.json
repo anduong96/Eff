@@ -8,7 +8,7 @@
         "build": "gatsby build",
         "serve": "gatsby serve",
         "pub": "gh-pages -d public -b releases",
-        "deploy": "gatsby build --prefix-paths && gh-pages -d public -b releases"
+        "deploy": "gatsby build --prefix-paths && gh-pages -d public -b master"
     },
     "dependencies": {
         "antd": "^3.10.7",
