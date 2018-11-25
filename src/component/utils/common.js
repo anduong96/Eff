@@ -14,20 +14,20 @@ export const objToQueryParam = (obj = {}) => Object.keys(obj)
 
 
 export const getCurrentParam = () => {
-    var vars = {};
+    var params = {}
     window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, (m,key,value) =>{
         const intVal = parseInt(value)
-        vars[key] = isNaN(intVal) ? value : intVal
-    });
+        params[key] = isNaN(intVal) ? value : intVal
+    })
 
-    return vars;
+    return params
 }
 
 export const shuffleArray = (a) => {
     for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
+        const j = Math.floor(Math.random() * (i + 1))
+        [a[i], a[j]] = [a[j], a[i]]
     }
 
-    return a;
+    return a
 }

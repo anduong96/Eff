@@ -196,4 +196,4 @@ class TestPage extends Component {
     )
 }
 
-export default TestPage;
+export default TestPage

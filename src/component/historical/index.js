@@ -45,4 +45,4 @@ class Historical extends Component {
     )
 }
 
-export default Historical;
+export default Historical
