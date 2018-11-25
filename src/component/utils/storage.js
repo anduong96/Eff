@@ -5,7 +5,7 @@ export const getFromStorage = ({ key, defaultValue, callback }) => {
     if ( typeof window !== 'undefined' ) {
         const itemExist = window.localStorage.getItem(key)
         if (itemExist && itemExist !== 'undefined') {
-            if (typeof itemExist === 'string' || typeof itemExist === 'number') {
+            if (itemExist instanceof String || itemExist instanceof Number) {
                 out = itemExist
             } else {
                 out = JSON.parse(itemExist)
@@ -24,7 +24,7 @@ export const getFromStorage = ({ key, defaultValue, callback }) => {
     }
 }
 
-export const save = ({ key, value }) =>  {
+export const saveToStorage = ({ key, value }) =>  {
     if (typeof window !== 'underfined') {
         var newVal = deepCopy(value)
         window.localStorage.setItem(key, JSON.stringify(newVal))

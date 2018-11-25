@@ -17,7 +17,22 @@
     text-align: center;
 }
 
-#take-button {
+#take-button,
+#historical-button {
     margin-top:10px;
     width: 100%
+}
+
+#configure-container .ant-time-picker,
+#configure-container .ant-input-number {
+    width: 100%;
+    margin: 5px 0px;
+}
+
+#configure-container .ant-input-number .ant-input-number-input-wrap {
+    border-radius: 4px;
+}
+
+#configure-container input {
+    text-align: center;
 }

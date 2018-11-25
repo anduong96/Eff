@@ -1,16 +1,36 @@
 import React from 'react'
-import { Radio } from 'antd'
+import { Radio, Checkbox } from 'antd'
 
 
-const formatChoices = ({ data = {} }) => Object.keys(data).map(key => {
+const formatCheckboxChoices = ({ choices = {} }) => Object.keys(choices).sort().map(key => `[ ${key} ] ${choices[key]}`)
+
+const formatRadioChoices = ({ choices = {} }) => Object.keys(choices).sort().map(key => {
     return {
-        label: data[key],
+        label: `[ ${key} ] ${choices[key]}`,
         value: key
     }
 })
 
-export const Choices = (data = {}, onSelect = () => console.log(1)) => (
-    <div>
-        <Radio.Group className={'answers-group'} options={formatChoices(data)} onChange={onSelect} />
+const RadioChoices = ({ choices, onSelect }) => (
+    <Radio.Group
+        className={'answers-group'}
+        options={formatRadioChoices({ choices })}
+        onChange={e => onSelect({ answer: e.target.value, isCheckbox: false})}
+    />
+)
+
+const CheckboxChoices = ({ choices, onSelect }) => (
+    <Checkbox.Group
+        options={formatCheckboxChoices({ choices })}
+        onChange={value => onSelect({ answer: value, isCheckbox: true }) }
+    />
+)
+
+export const Choices = ({ data = {}, isCheckbox , onSelect }) => (
+    <div className={'focus-choices-container'}>
+        { isCheckbox ?
+            <CheckboxChoices choices={data} onSelect={onSelect} />
+            : <RadioChoices choices={data} onSelect={onSelect} />
+        }
     </div>
 )
