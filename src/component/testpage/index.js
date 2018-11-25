@@ -8,6 +8,7 @@ import { Focus } from './Focus'
 import Timer from './Timer'
 import { saveToStorage, getFromStorage } from '../utils/storage'
 import { getCurrentParam, shuffleArray } from '../utils/common'
+import { KEY_CODES } from './util'
 import Config from '../../configs'
 
 class TestPage extends Component {
@@ -65,10 +66,25 @@ class TestPage extends Component {
 
             const newHistory = getFromStorage({ key: Config.previousLinks, defaultValue: [] }).filter(val => val !== hackyUrl)
             saveToStorage({ key: Config.previousLinks, value: [hackyUrl, ...newHistory] })
+            document.addEventListener('keydown', this._handleKeyPress);
+
         }).catch(err => {
             console.log({ err })
             navigate('/404/')
         })
+    }
+
+    _handleKeyPress = (e) => {
+        const { keyCode } = e
+        const { hasNext, hasPrev } = this.state
+        const goNext = (keyCode === KEY_CODES.DOWN_ARROW || keyCode === KEY_CODES.RIGHT_ARROW) && hasNext
+        const goPrev = (keyCode === KEY_CODES.UP_ARROW || keyCode === KEY_CODES.LEFT_ARROW) && hasPrev
+
+        if (goNext) {
+            this.onNextPress()
+        } else if (goPrev)  {
+            this.onPrevPress()
+        }
     }
 
     onNextPress = () => {
@@ -171,6 +187,7 @@ class TestPage extends Component {
             <Layout.Content>
                 <Layout className={'focus-layout'}>
                     <Layout.Header id={'focus-header'}>
+                        <h2 id={'question-number'}>Q: {parseInt(this.state.currentQuestionNum) + 1}</h2>
                         { this.timeLimit > 0 && this.state.mode === 'test' && <Timer onTimeInSec={this.timeLimit} onTimerEnded={this.onTimerEnded} />}
                     </Layout.Header>
                     <Layout.Content>

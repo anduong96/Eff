@@ -93,3 +93,9 @@
 .test-answer {
     margin-top: 40px;
 }
+
+#question-number {
+    display: inline-block;
+}
+
+
