@@ -30,11 +30,11 @@ class TestPage extends Component {
     componentDidMount = () => {
         const params = getCurrentParam()
         const { url, timeLimit, testLength } = params
-        const isValidHttps = url.search(/^http[s]?:\/\//) < 0
-        const hasHttp = url.search(/^http:\//) < 0
-        const hasHttps = url.search(/^https:\//) < 0
+        const isValidHttps = url.search(/^http[s]?:\/\//) !== -1
+        const hasHttp = url.search(/^http:\//) !== -1
+        const hasHttps = url.search(/^https:\//) !== -1
+        // for some reason the query is https:/ ...
         var hackyUrl = hasHttps || hasHttp ? url : 'http://' + url
-
         if (!isValidHttps) {
             if (hasHttp) {
                 hackyUrl = hackyUrl.replace(/^http:\//, 'http://')
@@ -102,12 +102,12 @@ class TestPage extends Component {
     onSelectAnswer = ({ isCheckbox, answer }) => {
         const { questionList, currentQuestion, currentQuestionNum, userAnswers } = this.state
         const testAnswer = currentQuestion.answer
-        const userAnswer = isCheckbox ? Object.keys(currentQuestion.choices).filter(key => answer.includes(currentQuestion.choices[key])) : [answer]
-        const isCorrect = testAnswer.filter(answer => userAnswer.includes(answer)).length > 0
+        const userAnswer = isCheckbox ? answer.map(val => val.match(/\[ [A-Z] \] /, '')[0].replace('[ ', '').replace(' ] ', '')) : [answer]
+        const correctAnswers = testAnswer.filter(answer => userAnswer.includes(answer))
+        const isCorrect = correctAnswers.length === testAnswer.length
         userAnswers[parseInt(currentQuestionNum)] = { testAnswer, userAnswer, isCorrect }
         questionList[parseInt(currentQuestionNum)] = { ...currentQuestion, hasAnswer: userAnswer.length > 0 }
         const allAnswered = Object.keys(userAnswers).length === questionList.length
-
         this.setState({ userAnswers, allAnswered, questionList })
     }
 
@@ -186,8 +186,8 @@ class TestPage extends Component {
                             <Button id={'home-btn'} size={'large'} type={'danger'} onClick={() => navigate('')} ghost>Go Home</Button>
                         }
                         <Button.Group size={'large'} className={'test-nav-buttons'}>
-                            { this.state.hasPrev && <Button onClick={this.onPrevPress}><Icon type={'left'} />Backward</Button> }
-                            { this.state.hasNext && <Button onClick={this.onNextPress}>Forward<Icon type={'right'}/></Button> }
+                            { this.state.hasPrev && <Button onClick={this.onPrevPress}><Icon type={'left'} />Back</Button> }
+                            { this.state.hasNext && <Button onClick={this.onNextPress}>Next<Icon type={'right'}/></Button> }
                         </Button.Group>
                     </Layout.Footer>
                 </Layout>

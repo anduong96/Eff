@@ -42,11 +42,12 @@ export default class Landing extends Component {
 
     onValidateGist = (url) => {
         const link = document.getElementsByClassName('ant-input')[0].value
+        const targetUrl = url || link
         this.setState({ isButtonLoading: true , takeButtonValue: 'Checking Template'})
-        axios.get(url || link).then(resp => {
+        axios.get(targetUrl).then(resp => {
             var rawUrl = null
             var questions = null
-            if (url) {
+            if (targetUrl.endsWith('.json')) {
                 questions = resp.data
                 rawUrl = url
             } else {

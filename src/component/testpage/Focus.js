@@ -15,7 +15,7 @@ export const Focus = ({
 }) => (
     <div className={'focus-container'}>
         <Question data={question} />
-        <Choices data={choices} onSelect={onSelectAnswer} isCheckbox={answer.length > 1} />
+        <Choices data={choices} onSelect={onSelectAnswer} isCheckbox={answer.length > 1} answers={userAnswer} />
         { showAnswer && <Answer answers={answer} explain={explain} userAnswer={userAnswer.userAnswer} /> }
     </div>
 )
