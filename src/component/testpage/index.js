@@ -65,8 +65,10 @@ class TestPage extends Component {
 
             const newHistory = getFromStorage({ key: Config.previousLinks, defaultValue: [] }).filter(val => val !== hackyUrl)
             saveToStorage({ key: Config.previousLinks, value: [hackyUrl, ...newHistory] })
-
-        }).catch(err => navigate('/404/'))
+        }).catch(err => {
+            console.log({ err })
+            navigate('/404/')
+        })
     }
 
     onNextPress = () => {
@@ -106,7 +108,7 @@ class TestPage extends Component {
         const correctAnswers = testAnswer.filter(answer => userAnswer.includes(answer))
         const isCorrect = correctAnswers.length === testAnswer.length
         userAnswers[parseInt(currentQuestionNum)] = { testAnswer, userAnswer, isCorrect }
-        questionList[parseInt(currentQuestionNum)] = { ...currentQuestion, hasAnswer: userAnswer.length > 0 }
+        questionList[parseInt(currentQuestionNum)] = { ...currentQuestion, hasAnswer: userAnswer.length > 0, isCorrect }
         const allAnswered = Object.keys(userAnswers).length === questionList.length
         this.setState({ userAnswers, allAnswered, questionList })
     }
@@ -126,17 +128,17 @@ class TestPage extends Component {
     onTimerEnded = () => this.onScoreTest().then(this.onEndTest)
 
     onScoreTest = () => new Promise((resolve, reject) => {{
-        let right = 0
+        let correct = 0
 
         Object.keys(this.state.userAnswers).forEach(questionNum => {
             const result = this.state.userAnswers[questionNum]
             if (result.isCorrect) {
-                right += 1
+                correct += 1
             }
         })
 
-        const testScore = (right/this.state.questionList.length) * 100
-        resolve(testScore)
+        const testScore = (correct/this.state.questionList.length) * 100
+        resolve(Math.round(testScore).toFixed(0))
     }})
 
     onEndTest = (testScore) => Modal.confirm({
@@ -160,6 +162,7 @@ class TestPage extends Component {
         <Layout className={'full'}>
             <Layout.Sider collapsed={true} >
                 <Side
+                    isTestMode={this.state.mode === 'test'}
                     options={this.state.questionList}
                     active={this.state.currentQuestionNum}
                     onSelectQuestion={this.onSelectSideQuestion}

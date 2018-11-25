@@ -28,16 +28,22 @@ const generateNumbers = (max) => {
 
 
 
-export const Side = ({ options = [], active, onSelectQuestion }) => {
+export const Side = ({ options = [], isTestMode = false, active, onSelectQuestion }) => {
     const max = options.length
     const Numbers = generateNumbers(max)
+
     return (
         <Menu className={'side-menu'} mode={'inline'} selectedKeys={[`${active}`] || []} >
-            { options.map((opt, index) => (
-                <Menu.Item onClick={onSelectQuestion} key={`${index}`} className={opt.hasAnswer ? 'answered' : 'unanswered'}>
-                    <Icon component={Numbers[index + 1]} onClick={() => console.log({ opt })}/>
-                    <span>{opt.question}</span>
-                </Menu.Item>)
+            { options.map((opt, index) => {
+                const classForTestMode = opt.hasAnswer ? 'answered' : 'unanswered'
+                const classForReviewMode = opt.isCorrect ? 'incorrect' : 'incorrect'
+                return (
+                    <Menu.Item onClick={onSelectQuestion} key={`${index}`} className={isTestMode ? classForTestMode : classForReviewMode}>
+                        <Icon component={Numbers[index + 1]} onClick={() => console.log({ opt })}/>
+                        <span>{opt.question}</span>
+                    </Menu.Item>
+                )
+            }
             )}
         </Menu>
     )

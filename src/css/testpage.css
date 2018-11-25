@@ -74,11 +74,20 @@
 }
 
 .ant-menu-item.answered {
-    background-color: #e6f7ff
+    background-color: #e6f7ff !important;
+}
+
+.ant-menu-item.incorrect {
+    background-color: #f1a3a3 !important;
+}
+
+.ant-menu-item.correct {
+    background-color: #abeea2 !important;
 }
 
 .ant-menu-item.ant-menu-item-selected {
-    background-color: rgb(197, 241, 197) !important
+    border-bottom: 1px solid black;
+    font-weight: bolder;
 }
 
 .test-answer {

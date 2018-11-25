@@ -1,9 +1,12 @@
 import React from 'react'
 
-export const Answer = ({ answers = [], userAnswer= [], explain }) => (
-    <div class={'test-answer'}>
-        <h2>You Selected: {userAnswer.join(', ')}</h2>
+const formatExplain = (value) => value instanceof Array ? value.map(v => joinStr(v)).join('<br />') : joinStr(value)
+
+const joinStr = (value) => value ? value.split('\n').join('<br />') : null
+
+export const Answer = ({ answers = [], explain }) => (
+    <div className={'test-answer'}>
         <h2>Correct Answer: {answers.join(', ')}</h2>
-        <h3>{explain}</h3>
+        <div className='test-explain' dangerouslySetInnerHTML={{ __html: formatExplain(explain) }} />
     </div>
 )
