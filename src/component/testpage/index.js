@@ -30,7 +30,20 @@ class TestPage extends Component {
     componentDidMount = () => {
         const params = getCurrentParam()
         const { url, timeLimit, testLength } = params
-        axios.get(url).then(resp => {
+        const isValidHttps = url.search(/^http[s]?:\/\//) < 0
+        const hasHttp = url.search(/^http:\//) < 0
+        const hasHttps = url.search(/^https:\//) < 0
+        var hackyUrl = hasHttps || hasHttp ? url : 'http://' + url
+
+        if (!isValidHttps) {
+            if (hasHttp) {
+                hackyUrl = hackyUrl.replace(/^http:\//, 'http://')
+            } else if (hasHttps) {
+                hackyUrl = hackyUrl.replace(/^https:\//, 'https://')
+            }
+        }
+
+        axios.get(hackyUrl).then(resp => {
             const allQuestionList = resp.data
             const qList = shuffleArray(allQuestionList)
             const questionList = qList.slice(0, testLength)
@@ -49,6 +62,9 @@ class TestPage extends Component {
                 hasPrev,
                 hasNext
             })
+
+            const newHistory = getFromStorage({ key: Config.previousLinks, defaultValue: [] }).filter(val => val !== hackyUrl)
+            saveToStorage({ key: Config.previousLinks, value: [hackyUrl, ...newHistory] })
 
         }).catch(err => navigate('/404/'))
     }

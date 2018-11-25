@@ -2,10 +2,11 @@ import React, { Component } from 'react'
 import { navigate } from 'gatsby'
 import axios from 'axios'
 import moment from 'moment'
-import { Layout, Form, AutoComplete, Button, notification } from 'antd'
+import { Layout, Form, AutoComplete, Button } from 'antd'
 import { Configuration } from './Configure'
-import { getFromStorage, saveToStorage } from '../utils/storage'
+import { getFromStorage } from '../utils/storage'
 import { converTimeToSecs, objToQueryParam } from '../utils/common'
+import * as app from '../../../package.json'
 import Config from '../../configs'
 
 export default class Landing extends Component {
@@ -36,28 +37,32 @@ export default class Landing extends Component {
             testLength: selectedQuestionsLength || maxQuestionsLength
         }
 
-        const link = document.getElementsByClassName('ant-input')[0].value
-        const newHistory = this.state.historicalLinks.filter(val => val !== link)
-        saveToStorage({ key: Config.previousLinks, value: [link, ...newHistory] })
         navigate(`/take/?${objToQueryParam(query)}`)
     }
 
-    onValidateGist = () => {
+    onValidateGist = (url) => {
         const link = document.getElementsByClassName('ant-input')[0].value
         this.setState({ isButtonLoading: true , takeButtonValue: 'Checking Template'})
-        axios.get(link).then(resp => {
-            console.log(resp)
-            const { files } = resp.data
-            const target = files[Object.keys(files)[0]]
-            const { raw_url, content } = target
-            const questions = JSON.parse(content)
+        axios.get(url || link).then(resp => {
+            var rawUrl = null
+            var questions = null
+            if (url) {
+                questions = resp.data
+                rawUrl = url
+            } else {
+                const { files } = resp.data
+                const target = files[Object.keys(files)[0]]
+                rawUrl = target.raw_url
+                questions = JSON.parse(target.content)
+            }
+
             this.setState({
                 maxQuestionsLength: questions.length,
                 takeButtonValue: 'Take!',
                 isButtonLoading: false,
                 isInputError: false,
                 isConfigure: true,
-                testLink: raw_url,
+                testLink: rawUrl,
             })
         }).catch(err => {
             console.log(err)
@@ -69,23 +74,13 @@ export default class Landing extends Component {
         })
     }
 
-    onEasterEgg = () => this.setState({ bodyClicks: this.state.bodyClicks + 1 }, () => {
-        const { bodyClicks } = this.state
-        if (bodyClicks === 20) {
-            document.getElementsByClassName('ant-input')[0].value = 'LOL'
-            this.setState({ bodyClicks: 0 })
-        } else if (bodyClicks > 10 && bodyClicks < 20) {
-            notification.open({ message: `Click ${20 - bodyClicks} times` })
-        }
-    })
-
     onChangeTestTime = (testTime) => this.setState({ testTime })
 
     onChangeQuestionLength = (selectedQuestionsLength) => this.setState({ selectedQuestionsLength })
 
     render = () => (
-        <Layout className={'full'} onClick={this.onEasterEgg}>
-            <Layout.Header></Layout.Header>
+        <Layout className={'full'} >
+            <Layout.Header><small>Version {app.version}</small></Layout.Header>
             <Layout.Content className={'dead-center'}>
                 <div className={'welcome'}>
                     <h1>Welcome to Eff</h1>
@@ -97,8 +92,8 @@ export default class Landing extends Component {
                         <AutoComplete
                             id={'link-input'}
                             size={'large'}
-                            placeholder={'this.state.linkInputPlaceholder'}
-                            {...this.state.historicalLinks.length > 0 && { defaultValue: this.state.historicalLinks[0] }}
+                            placeholder={'Test Template URL'}
+                            onSelect={(val, opt) => this.onValidateGist(opt.props.children)}
                         >
                             {this.state.historicalLinks.map((link, index) => <AutoComplete.Option key={`${index}`}>{link}</AutoComplete.Option>)}
                         </AutoComplete>
@@ -113,7 +108,7 @@ export default class Landing extends Component {
                     }
                     <Button
                         loading={this.state.isButtonLoading}
-                        onClick={this.state.isConfigure ? this.onLinkEnter : this.onValidateGist}
+                        onClick={() => this.state.isConfigure ? this.onLinkEnter() : this.onValidateGist()}
                         id={'take-button'}
                         type={'primary'}
                         size={'large'}
