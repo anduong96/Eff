@@ -1,5 +1,9 @@
 # Eff
-> Its a simple, stupid, and easy [test engine] (https://anduong96.github.io/Eff/)
+> Its a simple, stupid, and easy [test engine](https://anduong96.github.io/Eff/)
+
+### Development
+Want to contribute? Create a pull request
+
 ### Installation
 Prerequisite: [NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) and [Gatsby.js](https://www.gatsbyjs.org/tutorial/part-zero/)
 ```sh
@@ -8,9 +12,6 @@ $ cd Eff
 $ npm install
 $ npm dev
 ```
-
-### Development
-Want to contribute? Create a pull request
 
 ### Sample template
 ```javascript
