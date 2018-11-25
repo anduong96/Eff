@@ -36,7 +36,9 @@ export default class Landing extends Component {
             testLength: selectedQuestionsLength || maxQuestionsLength
         }
 
-        saveToStorage({ key: Config.previousLinks, value: [testLink, ...this.state.historicalLinks] })
+        const link = document.getElementsByClassName('ant-input')[0].value
+        const newHistory = this.state.historicalLinks.filter(val => val !== link)
+        saveToStorage({ key: Config.previousLinks, value: [link, ...newHistory] })
         navigate(`/take/?${objToQueryParam(query)}`)
     }
 
@@ -44,6 +46,7 @@ export default class Landing extends Component {
         const link = document.getElementsByClassName('ant-input')[0].value
         this.setState({ isButtonLoading: true , takeButtonValue: 'Checking Template'})
         axios.get(link).then(resp => {
+            console.log(resp)
             const { files } = resp.data
             const target = files[Object.keys(files)[0]]
             const { raw_url, content } = target
@@ -57,6 +60,7 @@ export default class Landing extends Component {
                 testLink: raw_url,
             })
         }).catch(err => {
+            console.log(err)
             this.setState({
                 takeButtonValue: 'Retry!',
                 isInputError: true,
@@ -96,7 +100,7 @@ export default class Landing extends Component {
                             placeholder={'this.state.linkInputPlaceholder'}
                             {...this.state.historicalLinks.length > 0 && { defaultValue: this.state.historicalLinks[0] }}
                         >
-                            {this.state.historicalLinks.map(link => <AutoComplete.Option key={`${link}`}>{link}</AutoComplete.Option>)}
+                            {this.state.historicalLinks.map((link, index) => <AutoComplete.Option key={`${index}`}>{link}</AutoComplete.Option>)}
                         </AutoComplete>
                     </Form.Item>
                     { this.state.isConfigure &&
