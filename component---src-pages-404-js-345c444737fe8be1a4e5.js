@@ -1,0 +1,2 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[6],{135:function(e,n,a){"use strict";a.r(n);var t=a(0),r=a.n(t),c=a(479);a(162);n.default=function(){return r.a.createElement("div",{id:"app-main"},r.a.createElement(c.a,null,r.a.createElement(c.a.Content,{className:"dead-center"},"Error")))}},162:function(e,n,a){}}]);
+//# sourceMappingURL=component---src-pages-404-js-345c444737fe8be1a4e5.js.map
