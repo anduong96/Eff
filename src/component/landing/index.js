@@ -2,15 +2,17 @@ import React, { Component } from 'react'
 import { navigate } from 'gatsby'
 import axios from 'axios'
 import moment from 'moment'
-import { Layout, Form, Input, Button } from 'antd'
+import { Layout, Form, AutoComplete, Button, notification } from 'antd'
 import { Configuration } from './Configure'
-import { getFromStorage } from '../utils/storage'
+import { getFromStorage, saveToStorage } from '../utils/storage'
 import { converTimeToSecs, objToQueryParam } from '../utils/common'
 import Config from '../../configs'
 
 export default class Landing extends Component {
     state = {
         hasHistory: getFromStorage({ key: Config.storageKey, defaultValue: [] }).length > 0,
+        historicalLinks: getFromStorage({ key: Config.previousLinks, defaultValue: [] }),
+        bodyClicks: 0,
         testLink: '',
         maxQuestionsLength: 0,
         selectedQuestionsLength: null,
@@ -34,11 +36,12 @@ export default class Landing extends Component {
             testLength: selectedQuestionsLength || maxQuestionsLength
         }
 
+        saveToStorage({ key: Config.previousLinks, value: [testLink, ...this.state.historicalLinks] })
         navigate(`/take/?${objToQueryParam(query)}`)
     }
 
     onValidateGist = () => {
-        const link = document.getElementById('link-input').value
+        const link = document.getElementsByClassName('ant-input')[0].value
         this.setState({ isButtonLoading: true , takeButtonValue: 'Checking Template'})
         axios.get(link).then(resp => {
             const { files } = resp.data
@@ -62,18 +65,22 @@ export default class Landing extends Component {
         })
     }
 
+    onEasterEgg = () => this.setState({ bodyClicks: this.state.bodyClicks + 1 }, () => {
+        const { bodyClicks } = this.state
+        if (bodyClicks === 20) {
+            document.getElementsByClassName('ant-input')[0].value = 'LOL'
+            this.setState({ bodyClicks: 0 })
+        } else if (bodyClicks > 10 && bodyClicks < 20) {
+            notification.open({ message: `Click ${20 - bodyClicks} times` })
+        }
+    })
+
     onChangeTestTime = (testTime) => this.setState({ testTime })
 
     onChangeQuestionLength = (selectedQuestionsLength) => this.setState({ selectedQuestionsLength })
 
-    _handleKeyPress = (e) => {
-        if (e.key === 'Enter') {
-            this.onLinkEnter()
-        }
-    }
-
     render = () => (
-        <Layout className={'full'}>
+        <Layout className={'full'} onClick={this.onEasterEgg}>
             <Layout.Header></Layout.Header>
             <Layout.Content className={'dead-center'}>
                 <div className={'welcome'}>
@@ -83,13 +90,14 @@ export default class Landing extends Component {
                 </div>
                 <div className={'link-input-container'}>
                     <Form.Item {...this.state.isInputError ? {...this.state.invalidForm} : {}} >
-                        <Input
+                        <AutoComplete
                             id={'link-input'}
-                            placeholder={this.state.linkInputPlaceholder}
-                            onKeyPress={this._handleKeyPress}
-                            defaultValue={'https://api.github.com/gists/d64f1bbbef594c463b7f903dc978aa6d'}
                             size={'large'}
-                        />
+                            placeholder={'this.state.linkInputPlaceholder'}
+                            {...this.state.historicalLinks.length > 0 && { defaultValue: this.state.historicalLinks[0] }}
+                        >
+                            {this.state.historicalLinks.map(link => <AutoComplete.Option key={`${link}`}>{link}</AutoComplete.Option>)}
+                        </AutoComplete>
                     </Form.Item>
                     { this.state.isConfigure &&
                         <Configuration

@@ -1,5 +1,4 @@
 import React from 'react'
-import { Tag  } from 'antd'
 
 export const Answer = ({ answers = [], userAnswer= [], explain }) => (
     <div class={'test-answer'}>
