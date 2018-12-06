@@ -49,7 +49,7 @@ export default class Landing extends Component {
             var questions = null
             if (targetUrl.endsWith('.json')) {
                 questions = resp.data
-                rawUrl = url
+                rawUrl = targetUrl
             } else {
                 const { files } = resp.data
                 const target = files[Object.keys(files)[0]]

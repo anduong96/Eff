@@ -82,7 +82,7 @@ class TestPage extends Component {
 
         if (goNext) {
             this.onNextPress()
-        } else if (goPrev)  {
+        } else if (goPrev) {
             this.onPrevPress()
         }
     }

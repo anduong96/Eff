@@ -36,7 +36,7 @@ export const Side = ({ options = [], isTestMode = false, active, onSelectQuestio
         <Menu className={'side-menu'} mode={'inline'} selectedKeys={[`${active}`] || []} >
             { options.map((opt, index) => {
                 const classForTestMode = opt.hasAnswer ? 'answered' : 'unanswered'
-                const classForReviewMode = opt.isCorrect ? 'incorrect' : 'incorrect'
+                const classForReviewMode = opt.isCorrect ? 'correct' : 'incorrect'
                 return (
                     <Menu.Item onClick={onSelectQuestion} key={`${index}`} className={isTestMode ? classForTestMode : classForReviewMode}>
                         <Icon component={Numbers[index + 1]} onClick={() => console.log({ opt })}/>
