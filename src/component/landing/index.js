@@ -23,18 +23,22 @@ export default class Landing extends Component {
         isInputError: false,
         isConfigure: false,
         isButtonLoading: false,
+        isReady: false,
         invalidForm: {
             validateStatus: 'error',
             help: 'Invalid Link or format'
         }
     }
 
-    onLinkEnter = () => {
+    onLinkEnter = (isPractice) => {
         const { testLink, testTime, selectedQuestionsLength, maxQuestionsLength } = this.state
-        const query = {
+        let query = {
             url: testLink,
             timeLimit: converTimeToSecs(testTime),
             testLength: selectedQuestionsLength || maxQuestionsLength
+        }
+        if(isPractice){
+            query.practice = true
         }
 
         navigate(`/take/?${objToQueryParam(query)}`)
@@ -60,6 +64,7 @@ export default class Landing extends Component {
             this.setState({
                 maxQuestionsLength: questions.length,
                 takeButtonValue: 'Take!',
+                isReady: true,
                 isButtonLoading: false,
                 isInputError: false,
                 isConfigure: true,
@@ -114,6 +119,14 @@ export default class Landing extends Component {
                         type={'primary'}
                         size={'large'}
                     >{this.state.takeButtonValue}</Button>
+                    <Button
+                        loading={this.state.isButtonLoading}
+                        onClick={() => this.state.isConfigure ? this.onLinkEnter(true) : this.onValidateGist()}
+                        id={'practice-button'}
+                        type={'primary'}
+                        size={'large'}
+                        hidden={!this.state.isReady}
+                    >Practice</Button>
                     { this.state.hasHistory &&
                         <Button
                             id={'historical-button'}

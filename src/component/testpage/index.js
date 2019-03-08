@@ -25,12 +25,13 @@ class TestPage extends Component {
         currentQuestionNum: '0',
         isError: false,
         hasNext: false,
-        hasPrev: false
+        hasPrev: false,
+        showAnswer: false
     }
 
     componentDidMount = () => {
         const params = getCurrentParam()
-        const { url, timeLimit, testLength } = params
+        const { url, timeLimit, testLength, practice } = params
         const isValidHttps = url.search(/^http[s]?:\/\//) !== -1
         const hasHttp = url.search(/^http:\//) !== -1
         const hasHttps = url.search(/^https:\//) !== -1
@@ -51,7 +52,7 @@ class TestPage extends Component {
             const currentQuestion = questionList[0]
             const currentQuestionNum = '0'
             const hasPrev = false
-            const hasNext = true
+            const hasNext = testLength > 1
 
             this.timeLimit = timeLimit
             this.setState({
@@ -61,7 +62,8 @@ class TestPage extends Component {
                 currentQuestionNum,
                 testLength,
                 hasPrev,
-                hasNext
+                hasNext,
+                mode: practice === "true" ? "practice" : "test"
             })
 
             const newHistory = getFromStorage({ key: Config.previousLinks, defaultValue: [] }).filter(val => val !== hackyUrl)
@@ -97,6 +99,7 @@ class TestPage extends Component {
         this.setState({
             currentQuestionNum: `${nextNum}`,
             currentQuestion: nextQuestion,
+            showAnswer: false,
             hasNext,
             hasPrev
         })
@@ -106,7 +109,7 @@ class TestPage extends Component {
         const { currentQuestionNum, questionList, testLength } = this.state
         const nextNum = parseInt(currentQuestionNum) - 1
         const nextQuestion = questionList[nextNum]
-        const hasNext = nextNum < testLength
+        const hasNext = nextNum < testLength - 1
         const hasPrev = nextNum > 0
 
         this.setState({
@@ -114,6 +117,12 @@ class TestPage extends Component {
             currentQuestion: nextQuestion,
             hasNext,
             hasPrev
+        })
+    }
+
+    displayAnswer = () => {
+        this.setState({
+            showAnswer: true
         })
     }
 
@@ -132,7 +141,7 @@ class TestPage extends Component {
     onSelectSideQuestion = ({ key }) => this.setState({
         currentQuestion: this.state.questionList[parseInt(key)],
         currentQuestionNum: key,
-        hasNext: parseInt(key) < this.state.testLength,
+        hasNext: parseInt(key) < this.state.testLength - 1,
         hasPrev: parseInt(key) > 0
     })
 
@@ -178,7 +187,7 @@ class TestPage extends Component {
         <Layout className={'full'}>
             <Layout.Sider collapsed={true} >
                 <Side
-                    isTestMode={this.state.mode === 'test'}
+                    isReviewMode={this.state.mode === 'review'}
                     options={this.state.questionList}
                     active={this.state.currentQuestionNum}
                     onSelectQuestion={this.onSelectSideQuestion}
@@ -194,12 +203,12 @@ class TestPage extends Component {
                         <Focus
                             {...this.state.currentQuestion}
                             onSelectAnswer={this.onSelectAnswer}
-                            showAnswer={this.state.mode === 'review'}
+                            showAnswer={this.state.mode === 'review' || this.state.showAnswer}
                             userAnswer={this.state.userAnswers[parseInt(this.state.currentQuestionNum)]}
                         />
                     </Layout.Content>
                     <Layout.Footer>
-                        { this.state.allAnswered && this.state.mode === 'test' &&
+                        { this.state.allAnswered && this.state.mode !== 'review' &&
                             <Button id={'submit-test-btn'} size={'large'} type={'danger'} onClick={this.onSubmit} ghost>Submit</Button>
                         }
                         { this.state.mode === 'review' &&
@@ -207,7 +216,8 @@ class TestPage extends Component {
                         }
                         <Button.Group size={'large'} className={'test-nav-buttons'}>
                             { this.state.hasPrev && <Button onClick={this.onPrevPress}><Icon type={'left'} />Back</Button> }
-                            { this.state.hasNext && <Button onClick={this.onNextPress}>Next<Icon type={'right'}/></Button> }
+                            { this.state.hasNext && (this.state.mode !== 'practice' || this.state.showAnswer) && <Button onClick={this.onNextPress}>Next<Icon type={'right'}/></Button> }
+                            { this.state.mode === 'practice' && !this.state.showAnswer && <Button onClick={this.displayAnswer}>ShowAnswer<Icon type={'right'}/></Button> }
                         </Button.Group>
                     </Layout.Footer>
                 </Layout>

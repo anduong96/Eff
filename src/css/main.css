@@ -46,3 +46,10 @@
 #historical-home-btn {
     width: 100%
 }
+
+.incorrect-text{
+    color: red;
+}
+.correct-text{
+    color: green;
+}

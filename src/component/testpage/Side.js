@@ -28,7 +28,7 @@ const generateNumbers = (max) => {
 
 
 
-export const Side = ({ options = [], isTestMode = false, active, onSelectQuestion }) => {
+export const Side = ({ options = [], isReviewMode = false, active, onSelectQuestion }) => {
     const max = options.length
     const Numbers = generateNumbers(max)
 
@@ -38,7 +38,7 @@ export const Side = ({ options = [], isTestMode = false, active, onSelectQuestio
                 const classForTestMode = opt.hasAnswer ? 'answered' : 'unanswered'
                 const classForReviewMode = opt.isCorrect ? 'correct' : 'incorrect'
                 return (
-                    <Menu.Item onClick={onSelectQuestion} key={`${index}`} className={isTestMode ? classForTestMode : classForReviewMode}>
+                    <Menu.Item onClick={onSelectQuestion} key={`${index}`} className={isReviewMode ? classForReviewMode : classForTestMode }>
                         <Icon component={Numbers[index + 1]} onClick={() => console.log({ opt })}/>
                         <span>{opt.question}</span>
                     </Menu.Item>

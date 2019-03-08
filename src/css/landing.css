@@ -19,7 +19,8 @@
 }
 
 #take-button,
-#historical-button {
+#historical-button,
+#practice-button {
     margin-top:10px;
     width: 100%
 }
